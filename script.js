@@ -1,4 +1,3 @@
-// 1. Define global function for HTML onkeydown attribute
 window.formatPhoneOnEnter = function (element, event) {
   let allowedKeys = ["Backspace", "Delete", "Tab", "Escape", "Enter"];
   if (allowedKeys.includes(event.key)) return;
@@ -36,25 +35,42 @@ window.formatPhoneOnEnter = function (element, event) {
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("webToCaseForm");
 
-  // Reset form on load to ensure clean state
   if (form) form.reset();
 
-  // --- IDs from your HTML ---
   const categorySelectId = "00NWC000004WAk9";
   const typeSelectId = "00NWC000004WAkB";
   const emailInputId = "00NWC000004WAjt";
   const phoneInputId = "00NWC000004WAk0";
 
-  // --- Element Selectors ---
   const categorySelect = document.getElementById(categorySelectId);
   const typeSelect = document.getElementById(typeSelectId);
   const emailInput = document.getElementById(emailInputId);
   const phoneInput = document.getElementById(phoneInputId);
 
-  // NEW: Select the submit button
   const submitButton = form ? form.querySelector(".submit-btn") : null;
 
-  // --- 1. Multi-Select UX Logic ---
+  const charLimits = {
+    "00NWC000004WAjw": 255, // First Name
+    "00NWC000004WAjy": 255, // Last Name
+    "00NWC000004WAjt": 255, // Email
+    "00NWC000004WAk0": 15, // Phone
+    "00NWC000004WAkC": 255, // Spouse Name
+    "00NWC000004WAk4": 255, // RV Model
+    description: 32000, // Description
+  };
+
+  function checkCharacterLimit(element) {
+    const limit = charLimits[element.name] || charLimits[element.id];
+    if (limit && element.value.length > limit) {
+      return `The input for '${
+        element.labels
+          ? element.labels[0].textContent.replace("*", "").trim()
+          : element.name
+      }' is too long. Max allowed is ${limit} characters.`;
+    }
+    return null;
+  }
+
   if (categorySelect) {
     categorySelect.addEventListener("mousedown", function (e) {
       e.preventDefault();
@@ -77,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 2. Remove Error Styles on Input ---
   if (emailInput) {
     emailInput.addEventListener("input", function () {
       this.classList.remove("error-input");
@@ -89,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 3. Dynamic Service Options Data ---
   const serviceOptions = {
     "Bearing Repack": [
       { val: "Tandem Axle", text: "Tandem Axle" },
@@ -121,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
     ],
   };
 
-  // --- 4. Service Type Dependency Logic ---
   if (categorySelect && typeSelect) {
     categorySelect.addEventListener("change", function () {
       updateServiceTypes(categorySelect, typeSelect, serviceOptions);
@@ -170,12 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // --- 5. Toast Notification Function ---
   function showToast(message, isError = false) {
     const toast = document.getElementById("toast");
     toast.textContent = message;
 
-    // Reset classes and set type
     toast.className = "toast show";
     if (isError) {
       toast.classList.add("error");
@@ -188,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 5000);
   }
 
-  // --- 6. Handle Iframe Load (Completion) ---
   const iframe = document.getElementById("hidden_iframe");
   let isSubmitting = false;
 
@@ -205,10 +215,9 @@ document.addEventListener("DOMContentLoaded", function () {
           typeSelect.disabled = true;
         }
 
-        // --- RE-ENABLE BUTTON ---
         if (submitButton) {
           submitButton.disabled = false;
-          submitButton.value = "submit"; // Restore original text
+          submitButton.value = "submit";
         }
 
         isSubmitting = false;
@@ -216,56 +225,55 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 7. Main Submit Handler ---
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
       let isValidInfo = true;
       let errorMessages = [];
+      let errorElements = [];
+      const formFields = form.querySelectorAll(
+        'input[type="text"], input[type="email"], textarea'
+      );
 
-      // ============================================
-      // STEP 1: TRIM VALUES
-      // ============================================
-      if (emailInput) emailInput.value = emailInput.value.trim();
-      if (phoneInput) phoneInput.value = phoneInput.value.trim();
+      formFields.forEach((field) => {
+        field.value = field.value.trim();
+        field.classList.remove("error-input");
+      });
+      formFields.forEach((field) => {
+        const charError = checkCharacterLimit(field);
+        if (charError) {
+          errorElements.push(field);
+          errorMessages.push(charError);
+          isValidInfo = false;
+        }
+      });
 
-      // ============================================
-      // STEP 2: PERFORM VALIDATION
-      // ============================================
-
-      // Email Validation
       if (emailInput) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(emailInput.value)) {
-          emailInput.classList.add("error-input");
+          errorElements.push(emailInput);
           isValidInfo = false;
           errorMessages.push("Invalid Email Address format.");
-        } else {
-          emailInput.classList.remove("error-input");
         }
       }
 
-      // Phone Validation
       if (phoneInput) {
         const phoneRegex =
           /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
         if (!phoneRegex.test(phoneInput.value)) {
-          phoneInput.classList.add("error-input");
+          errorElements.push(phoneInput);
           isValidInfo = false;
           errorMessages.push("Invalid Phone Number (min 10 digits required).");
-        } else {
-          phoneInput.classList.remove("error-input");
         }
       }
+      errorElements.forEach((element) => element.classList.add("error-input"));
 
-      // Stop if Basic Errors
       if (!isValidInfo) {
         showToast("Please fix the errors:\n" + errorMessages.join("\n"), true);
         return;
       }
 
-      // Validate Service Categories
       const selectedCategories = Array.from(categorySelect.selectedOptions).map(
         (o) => o.value
       );
@@ -288,21 +296,13 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
       }
-
-      // ============================================
-      // STEP 3: LOCK & SUBMIT
-      // ============================================
-
-      // 1. Disable Button Immediately
       if (submitButton) {
         submitButton.disabled = true;
-        submitButton.value = "Submitting..."; // Give visual feedback
+        submitButton.value = "Submitting...";
       }
 
-      // 2. Set Flag
       isSubmitting = true;
 
-      // 3. Submit
       HTMLFormElement.prototype.submit.call(form);
     });
   }
