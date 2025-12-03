@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Request - Ramblin Man</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <iframe id="hidden_iframe" name="hidden_iframe" style="display:none;"></iframe>
+    <div id="toast" class="toast">Case submitted successfully!</div>
+    <div class="container">
+    <h2>Raise A Request</h2>
+
+    <form id="webToCaseForm" action="https://ramblinmanrv--uatramblin.sandbox.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8&orgId=00DWC000009Gqs2" method="POST" target="hidden_iframe">
+
+        <input type="hidden" name="orgid" value="00DWC000009Gqs2">
+        <input type="hidden" name="retURL" value="https://www.ramblinmanrv.com">
+
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>First Name<span class="req">*</span></label>
+                <input id="00NWC000004WAjw" name="00NWC000004WAjw" type="text" placeholder="Enter your First Name" required />
+            </div> 
+            <div class="form-group">
+                <label>Last Name<span class="req">*</span></label>
+                <input id="00NWC000004WAjy" name="00NWC000004WAjy" type="text" placeholder="Enter your Last Name" required />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="00NWC000004WAjt">Email<span class="req">*</span></label>
+                <input id="00NWC000004WAjt" name="00NWC000004WAjt" type="text" placeholder="Enter your Email Address" required />
+            </div>
+            <div class="form-group">
+                <label for="00NWC000004WAk0">Phone<span class="req">*</span></label>
+                <input id="00NWC000004WAk0" name="00NWC000004WAk0" onkeydown="formatPhoneOnEnter(this, event);" type="text" placeholder="Enter your mobile number" required />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Spouse Name</label>
+                <input id="00NWC000004WAkC" name="00NWC000004WAkC" type="text" placeholder="Enter your Spouse Name" />
+            </div>
+            <div class="form-group">
+            <label>Preferred Contact Method</label>
+            <select id="00NWC000004WAk1" name="00NWC000004WAk1" 
+                style="color: #757575;" 
+                onchange="this.style.color = this.value ? 'black' : '#757575'">
+                
+                <option value="" disabled selected hidden>Select preferred Contact Method</option>
+                
+                <option value="">N/A</option>
+                
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="Text">Text</option>
+                <option value="WhatsApp">WhatsApp</option>
+            </select>
+        </div>
+        </div>
+
+
+        <h3 class="section-title">RV Details</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>RV Make<span class="req">*</span></label>
+                <select id="00NWC000004WAk3" name="00NWC000004WAk3" required>
+                    <option value="" disabled selected hidden>Select RV manufacturer make</option>
+                    <option value="Keystone">Keystone</option>
+                    <option value="Brinkley">Brinkley</option>
+                    <option value="Jayco">Jayco</option>
+                    <option value="Alliance">Alliance</option>
+                    <option value="Forest River">Forest River</option>
+                    <option value="Northwoods RV">Northwoods RV</option>
+                    <option value="Outdoors RV">Outdoors RV</option>
+                    <option value="Redwoods RV">Redwoods RV</option>
+                    <option value="Airstream">Airstream</option>
+                    <option value="DRV Luxury Suites">DRV Luxury Suites</option>
+                    <option value="Heartland">Heartland</option>
+                    <option value="Ketystone">Ketystone</option>
+                    <option value="Lance">Lance</option>
+                    <option value="Luxe">Luxe</option>
+                    <option value="New Horizon">New Horizon</option>
+                    <option value="Axiom RV">Axiom RV</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>RV Model<span class="req">*</span></label>
+                <input id="00NWC000004WAk4" name="00NWC000004WAk4" type="text" placeholder="Enter RV model" required />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>RV Year<span class="req">*</span></label>
+                <select id="00NWC000004WAk6" name="00NWC000004WAk6" required >
+                    <option value="" disabled selected hidden>Select Year of RV manufacture</option>
+                    <option value="2000">2000</option>
+                    <option value="2001">2001</option>
+                    <option value="2002">2002</option>
+                    <option value="2003">2003</option>
+                    <option value="2004">2004</option>
+                    <option value="2005">2005</option>
+                    <option value="2006">2006</option>
+                    <option value="2007">2007</option>
+                    <option value="2008">2008</option>
+                    <option value="2009">2009</option>
+                    <option value="2010">2010</option>
+                    <option value="2011">2011</option>
+                    <option value="2012">2012</option>
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Axle Type<span class="req">*</span></label>
+                <select id="00NWC000004WAjo" name="00NWC000004WAjo" required >
+                    <option value="" disabled selected hidden>Select Axle Configuration</option>
+                    <option value="Tandem (2 Axles)">Tandem (2 Axles)</option>
+                    <option value="Triple (3 Axles)">Triple (3 Axles)</option>
+                    <option value="Other/Custom">Other/Custom</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="highlight-section">
+            <h3>Service Request Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Service Category<span class="req">*</span></label>
+                    <small class="helper-text">Select Service Category</small>
+                    
+                    <select id="00NWC000004WAk9" name="00NWC000004WAk9" multiple size="6" required>
+                        <option value="Bearing Repack">Bearing Repack</option>
+                        <option value="Suspension Upgrade">Suspension Upgrade</option>
+                        <option value="Disc Brake Upgrade">Disc Brake Upgrade</option>
+                        <option value="Axle Upgrade">Axle Upgrade</option>
+                        <option value="Spring Upgrade">Spring Upgrade</option>
+                        <option value="Additional Safety Products">Additional Safety Products</option>
+                        <option value="Warranty Request">Warranty Request</option>
+                        <option value="Brake and/or Suspension Repair or Inspection">Brake/Suspension Repair</option>
+                        <option value="Follow Up">Follow Up</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Service Type</label>
+                    <small class="helper-text">Select specific service under selected category</small>
+                    <select id="00NWC000004WAkB" name="00NWC000004WAkB" multiple size="6" disabled>
+                        <option value="">-- Select Categories First --</option>
+                    </select>
+                </div> 
+            </div> <div class="form-group" style="margin-top: 15px;">
+                <label>Description</label>
+                <textarea name="description" placeholder="Additional details about the service" style="width: 100%; height: 100px;"></textarea>
+            </div>
+
+        </div>
+        
+        <h3 class="section-title" style="margin-top: 30px;">Pricing & Terms</h3>
+
+        <div class="checkbox-row">
+            <input  id="00NWC000004WAjn" 
+                    name="00NWC000004WAjn" 
+                    type="checkbox" 
+                    value="1" 
+                    required />
+            <label for="00NWC000004WAjn" class="checkbox-label">
+                I have read and agree to the <a href="https://www.ramblinmanrv.com/terms" target="_blank">Terms & Conditions</a><span class="req">*</span>
+            </label>
+        </div>
+
+        <div class="checkbox-row">
+            <input  id="00NWC000004WAkA" 
+                    name="00NWC000004WAkA" 
+                    type="checkbox" 
+                    value="1" 
+                    required />
+            <label for="00NWC000004WAkA" class="checkbox-label">
+                I understand service times are estimates, not fixed.<span class="req">*</span>
+            </label>
+        </div>
+
+        <input type="hidden" id="external" name="external" value="1" />
+
+        <input type="submit" name="submit" class="submit-btn" value="submit">
+
+    </form>
+</div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
