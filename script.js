@@ -71,27 +71,32 @@ document.addEventListener("DOMContentLoaded", function () {
     return null;
   }
 
-  if (categorySelect) {
-    categorySelect.addEventListener("mousedown", function (e) {
+  function makeMultiSelect(selectElement) {
+    if (!selectElement) return;
+
+    selectElement.multiple = true;
+
+    selectElement.addEventListener("mousedown", function (e) {
+      if (e.target.tagName !== "OPTION") return;
+
       e.preventDefault();
+
       const option = e.target;
-      if (option.tagName === "OPTION") {
-        option.selected = !option.selected;
-        categorySelect.dispatchEvent(new Event("change"));
-      }
+      const scrollTop = this.scrollTop;
+
+      option.selected = !option.selected;
+
+      this.dispatchEvent(new Event("change"));
+
+      this.focus();
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 0);
     });
   }
 
-  if (typeSelect) {
-    typeSelect.addEventListener("mousedown", function (e) {
-      e.preventDefault();
-      const option = e.target;
-      if (option.tagName === "OPTION") {
-        option.selected = !option.selected;
-        typeSelect.dispatchEvent(new Event("change"));
-      }
-    });
-  }
+  if (categorySelect) makeMultiSelect(categorySelect);
+  if (typeSelect) makeMultiSelect(typeSelect);
 
   if (emailInput) {
     emailInput.addEventListener("input", function () {
@@ -162,7 +167,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const newOption = document.createElement("option");
             newOption.value = opt.val;
             newOption.text = opt.text;
+
             if (prevSelected.has(opt.val)) newOption.selected = true;
+
             group.appendChild(newOption);
           });
           typSelect.appendChild(group);
@@ -217,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (submitButton) {
           submitButton.disabled = false;
-          submitButton.value = "submit";
+          submitButton.value = "Submit";
         }
 
         isSubmitting = false;
