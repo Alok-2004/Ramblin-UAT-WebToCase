@@ -95,6 +95,9 @@
                 <label>RV Model<span class="req">*</span></label>
                 <input id="00NWC000004WAk4" name="00NWC000004WAk4" type="text" placeholder="Enter RV model" required maxlength="255"/>
             </div>
+            <div>
+                <input type="hidden" name="00NWC000004dgRh" value="true">
+            </div>
         </div>
 
         <div class="form-row">
@@ -148,7 +151,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Service Category<span class="req">*</span></label>
-                    <small class="helper-text">Choose one or more service categories</small>
+                    <small class="helper-text">Choose one or more service categories.</small>
                     
                     <select id="00NWC000004WAk9" name="00NWC000004WAk9" multiple size="6" required>
                         <option value="Bearing Repack">Bearing Repack</option>
@@ -166,16 +169,34 @@
                 
                 <div class="form-group">
                     <label>Service Type</label>
-                    <small class="helper-text">Select the service type(s) that apply to your request (if applicable).
-</small>
+                    <small class="helper-text">Select the service type(s) that apply to your request.</small>
                     <select id="00NWC000004WAkB" name="00NWC000004WAkB" multiple size="6" disabled>
                         <option value="">-- Select Categories First --</option>
                     </select>
                 </div> 
-            </div> <div class="form-group" style="margin-top: 15px;">
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Rally Name<span class="req">*</span></label>
+
+                <small class="helper-text">
+                    Enter the rally name where you want your RV serviced. View the full list on the 
+                    <a href="https://www.ramblinman.com/event-rally" target="_blank">Event rally page</a>.
+                </small>
+
+                <input 
+                    type="text" 
+                    name="00NWC000004WAjz" 
+                    placeholder="Enter rally name" 
+                    style="width: 100%; height: 40px; margin-top: 5px;"
+                    maxlength="255"
+                    required
+                />
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
                 <label>Description</label>
                 <textarea name="description" placeholder="Additional details about the service" style="width: 100%; height: 100px;" maxlength="32000"></textarea>
             </div>
+
 
         </div>
         
@@ -214,5 +235,3 @@
 
 </body>
 </html>
-
-
