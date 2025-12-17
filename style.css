@@ -233,3 +233,20 @@ select option[disabled] {
     opacity: 0.8;
     transform: none;
 }
+
+.dropdown-wrapper {
+    position: relative;
+    height: 48px; /* Fixed height to match your other inputs */
+    width: 100%;
+    z-index: 100; /* Ensure it stays on top when open */
+}
+
+/* 2. The Select floats absolutely */
+.dropdown-wrapper select {
+    position: absolute;   
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Optional: Add a background so text below doesn't show through */
+    background-color: #fff; 
+}
