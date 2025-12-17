@@ -246,7 +246,20 @@ document.addEventListener("DOMContentLoaded", function () {
       formFields.forEach((field) => {
         field.value = field.value.trim();
         field.classList.remove("error-input");
+
+        // Edge case Fix
+        if (field.hasAttribute("required") && field.value === "") {
+          isValidInfo = false;
+          errorElements.push(field);
+
+          const label = field.labels
+            ? field.labels[0].textContent.replace("*", "").trim()
+            : field.name;
+
+          errorMessages.push(`The field '${label}' is required.`);
+        }
       });
+
       formFields.forEach((field) => {
         const charError = checkCharacterLimit(field);
         if (charError) {
