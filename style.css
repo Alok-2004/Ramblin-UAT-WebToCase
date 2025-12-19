@@ -293,7 +293,10 @@ span.flatpickr-weekday {
     display: none;
 }
 
-/* --- Global Reset for Dropdowns --- */
+.InstallAddress {
+    display: none;
+}
+
 .dropdown-wrapper, .dropdown-wrapper_1 {
   position: relative;
   height: 48px; 
