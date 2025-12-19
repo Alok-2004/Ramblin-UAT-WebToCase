@@ -36,6 +36,7 @@ const rvYearSelect = document.getElementById("00NWC000004WAk6");
 const rvMakeSelect = document.getElementById("00NWC000004WAk3");
 const prefferedContact = document.getElementById("00NWC000004WAk1");
 const Axletype = document.getElementById("00NWC000004WAjo");
+const state = document.getElementById("00NWC000004iFqf");
 
 function setupNoBlinkDropdown(selectElement) {
   if (!selectElement) return;
@@ -87,21 +88,25 @@ setupNoBlinkDropdown(rvYearSelect);
 setupNoBlinkDropdown(rvMakeSelect);
 setupNoBlinkDropdown(prefferedContact);
 setupNoBlinkDropdown(Axletype);
+setupNoBlinkDropdown(state);
 
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("webToCaseForm");
 
   const rallySection = document.querySelector(".RallyInfo");
+  const installAddressSection = document.querySelector(".InstallAddress");
   const rallyNameInput = document.getElementById("00NWC000004WAjz");
   const rallyRadios = document.querySelectorAll('input[name="attendRally"]');
 
   const arrivalInput = document.getElementById("00NWC000004WAjq");
   const departureInput = document.getElementById("00NWC000004WAjr");
+  const streetInput = document.getElementById("00NWC000004iEhi");
+  const stateSelect = document.getElementById("00NWC000004iFqf");
+  const postalcode = document.getElementById("00NWC000004iEwE");
+  const cityInput = document.getElementById("00NWC000004iFlp");
 
-  // 1. Initialize the variable at the top of DOMContentLoaded
   let datePickers = null;
 
-  // 2. Assign the flatpickr instances to the variable
   if (typeof flatpickr !== "undefined") {
     datePickers = flatpickr(".custom-datepicker", {
       dateFormat: "m/d/Y", // Fix for Salesforce US Locale
@@ -121,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
               if (clicked === selected) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
-                fp.clear(); // Toggle selection off
+                fp.clear();
               }
             }
           },
@@ -138,6 +143,10 @@ document.addEventListener("DOMContentLoaded", function () {
       rallySection.style.display = "none";
     }
 
+    if (installAddressSection) {
+      installAddressSection.style.display = "none";
+    }
+
     if (datePickers) {
       const instances = Array.isArray(datePickers)
         ? datePickers
@@ -150,16 +159,32 @@ document.addEventListener("DOMContentLoaded", function () {
     radio.addEventListener("change", function () {
       if (this.value === "yes") {
         rallySection.style.display = "block";
+        installAddressSection.style.display = "none";
+
         rallyNameInput.setAttribute("required", "required");
-      } else {
+        streetInput.removeAttribute("required");
+        stateSelect.removeAttribute("required");
+        postalcode.removeAttribute("required");
+        cityInput.removeAttribute("required");
+      } else if (this.value === "no") {
         rallySection.style.display = "none";
+        installAddressSection.style.display = "block";
+
         rallyNameInput.removeAttribute("required");
+        streetInput.setAttribute("required", "required");
+        stateSelect.setAttribute("required", "required");
+        postalcode.setAttribute("required", "required");
+        cityInput.setAttribute("required", "required");
 
         rallyNameInput.value = "";
         arrivalInput.value = "";
         departureInput.value = "";
-        if (window.datePickers) {
-          datePickers.forEach((fp) => fp.clear());
+
+        if (datePickers) {
+          const instances = Array.isArray(datePickers)
+            ? datePickers
+            : [datePickers];
+          instances.forEach((fp) => fp.clear());
         }
       }
     });
@@ -178,6 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const typeSelect = document.getElementById(typeSelectId);
   const emailInput = document.getElementById(emailInputId);
   const phoneInput = document.getElementById(phoneInputId);
+  const postalCodeInput = document.getElementById("00NWC000004iEwE");
 
   const submitButton = form ? form.querySelector(".submit-btn") : null;
 
@@ -346,14 +372,21 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isSubmitting) {
         showToast("Case submitted successfully!", false);
 
+        if (datePickers) {
+          const instances = Array.isArray(datePickers)
+            ? datePickers
+            : [datePickers];
+          instances.forEach((fp) => fp.clear());
+        }
+
         form.reset();
 
         if (rallySection) {
           rallySection.style.display = "none";
         }
 
-        if (window.datePickers) {
-          datePickers.forEach((fp) => fp.clear());
+        if (installAddressSection) {
+          installAddressSection.style.display = "none";
         }
 
         if (typeSelect) {
@@ -427,6 +460,20 @@ document.addEventListener("DOMContentLoaded", function () {
           errorElements.push(emailInput);
           isValidInfo = false;
           errorMessages.push("Invalid Email Address format.");
+        }
+      }
+
+      if (postalCodeInput && postalCodeInput.offsetParent !== null) {
+        const zipRegex = /^\d{5}(-\d{4})?$/;
+        if (
+          postalCodeInput.value !== "" &&
+          !zipRegex.test(postalCodeInput.value)
+        ) {
+          isValidInfo = false;
+          errorElements.push(postalCodeInput);
+          errorMessages.push(
+            "Invalid Postal Code format (12345 or 12345-6789)."
+          );
         }
       }
 
