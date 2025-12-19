@@ -32,10 +32,142 @@ window.formatPhoneOnEnter = function (element, event) {
   }, 0);
 };
 
+const rvYearSelect = document.getElementById("00NWC000004WAk6");
+const rvMakeSelect = document.getElementById("00NWC000004WAk3");
+const prefferedContact = document.getElementById("00NWC000004WAk1");
+const Axletype = document.getElementById("00NWC000004WAjo");
+
+function setupNoBlinkDropdown(selectElement) {
+  if (!selectElement) return;
+
+  let isExpanded = false;
+
+  const expand = (el) => {
+    const totalOptions = el.options.length;
+    el.size = totalOptions > 4 ? 4 : totalOptions;
+    isExpanded = true;
+    el.classList.add("is-expanded");
+    el.focus();
+  };
+
+  const collapse = () => {
+    selectElement.size = 1;
+    isExpanded = false;
+    selectElement.classList.remove("is-expanded");
+  };
+
+  selectElement.addEventListener(
+    "mousedown",
+    function (e) {
+      if (isExpanded) return;
+      e.preventDefault();
+      e.stopPropagation();
+      expand(this);
+    },
+    true
+  );
+
+  selectElement.addEventListener("change", collapse);
+  selectElement.addEventListener("blur", collapse);
+
+  selectElement.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      if (!isExpanded) {
+        e.preventDefault();
+        expand(this);
+      }
+    } else if (e.key === "Escape") {
+      collapse();
+      this.blur();
+    }
+  });
+}
+
+setupNoBlinkDropdown(rvYearSelect);
+setupNoBlinkDropdown(rvMakeSelect);
+setupNoBlinkDropdown(prefferedContact);
+setupNoBlinkDropdown(Axletype);
+
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("webToCaseForm");
 
-  if (form) form.reset();
+  const rallySection = document.querySelector(".RallyInfo");
+  const rallyNameInput = document.getElementById("00NWC000004WAjz");
+  const rallyRadios = document.querySelectorAll('input[name="attendRally"]');
+
+  const arrivalInput = document.getElementById("00NWC000004WAjq");
+  const departureInput = document.getElementById("00NWC000004WAjr");
+
+  // 1. Initialize the variable at the top of DOMContentLoaded
+  let datePickers = null;
+
+  // 2. Assign the flatpickr instances to the variable
+  if (typeof flatpickr !== "undefined") {
+    datePickers = flatpickr(".custom-datepicker", {
+      dateFormat: "m/d/Y", // Fix for Salesforce US Locale
+      altInput: true,
+      altFormat: "F j, Y",
+      minDate: "today",
+      disableMobile: true,
+      onReady: function (selectedDates, dateStr, fp) {
+        fp.calendarContainer.addEventListener(
+          "mousedown",
+          function (e) {
+            const day = e.target.closest(".flatpickr-day");
+            if (!day || day.classList.contains("disabled")) return;
+            if (fp.selectedDates.length === 1) {
+              const clicked = day.dateObj.getTime();
+              const selected = fp.selectedDates[0].getTime();
+              if (clicked === selected) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                fp.clear(); // Toggle selection off
+              }
+            }
+          },
+          true
+        );
+      },
+    });
+  }
+
+  function fullFormReset() {
+    form.reset();
+
+    if (rallySection) {
+      rallySection.style.display = "none";
+    }
+
+    if (datePickers) {
+      const instances = Array.isArray(datePickers)
+        ? datePickers
+        : [datePickers];
+      instances.forEach((fp) => fp.clear());
+    }
+  }
+
+  rallyRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
+      if (this.value === "yes") {
+        rallySection.style.display = "block";
+        rallyNameInput.setAttribute("required", "required");
+      } else {
+        rallySection.style.display = "none";
+        rallyNameInput.removeAttribute("required");
+
+        rallyNameInput.value = "";
+        arrivalInput.value = "";
+        departureInput.value = "";
+        if (window.datePickers) {
+          datePickers.forEach((fp) => fp.clear());
+        }
+      }
+    });
+  });
+
+  if (form) {
+    form.reset();
+  }
 
   const categorySelectId = "00NWC000004WAk9";
   const typeSelectId = "00NWC000004WAkB";
@@ -216,6 +348,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         form.reset();
 
+        if (rallySection) {
+          rallySection.style.display = "none";
+        }
+
+        if (window.datePickers) {
+          datePickers.forEach((fp) => fp.clear());
+        }
+
         if (typeSelect) {
           typeSelect.innerHTML =
             '<option value="">-- Select Categories First --</option>';
@@ -231,6 +371,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  fullFormReset();
 
   if (form) {
     form.addEventListener("submit", function (e) {
@@ -257,6 +399,16 @@ document.addEventListener("DOMContentLoaded", function () {
             : field.name;
 
           errorMessages.push(`The field '${label}' is required.`);
+        }
+
+        if (
+          field.hasAttribute("required") &&
+          field.offsetParent !== null &&
+          field.value === ""
+        ) {
+          isValidInfo = false;
+          errorElements.push(field);
+          errorMessages.push(`Required field missing.`);
         }
       });
 
@@ -287,6 +439,27 @@ document.addEventListener("DOMContentLoaded", function () {
           errorMessages.push("Invalid Phone Number (min 10 digits required).");
         }
       }
+
+      const arrivalInput = document.getElementById("00NWC000004WAjq");
+      const departureInput = document.getElementById("00NWC000004WAjr");
+      if (
+        arrivalInput &&
+        departureInput &&
+        arrivalInput.value &&
+        departureInput.value
+      ) {
+        const arrivalDate = new Date(arrivalInput.value);
+        const departureDate = new Date(departureInput.value);
+
+        if (arrivalDate > departureDate) {
+          isValidInfo = false;
+          errorElements.push(arrivalInput, departureInput);
+          errorMessages.push(
+            "Arrival Date cannot be after the Departure Date."
+          );
+        }
+      }
+
       errorElements.forEach((element) => element.classList.add("error-input"));
 
       if (!isValidInfo) {
