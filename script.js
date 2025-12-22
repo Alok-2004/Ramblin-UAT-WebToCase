@@ -36,7 +36,48 @@ const rvYearSelect = document.getElementById("00NWC000004WAk6");
 const rvMakeSelect = document.getElementById("00NWC000004WAk3");
 const prefferedContact = document.getElementById("00NWC000004WAk1");
 const Axletype = document.getElementById("00NWC000004WAjo");
-const state = document.getElementById("00NWC000004iFqf");
+const state = document.getElementById("00NWC000004jHFJ");
+
+function setSectionFieldsValue(section, value) {
+  if (!section) return;
+
+  const fields = section.querySelectorAll(
+    'input[type="text"], input[type="hidden"], textarea, select'
+  );
+
+  fields.forEach(field => {
+    field.value = value;
+  });
+}
+
+function clearSectionFields(section) {
+  if (!section) return;
+
+  const fields = section.querySelectorAll(
+    'input[type="text"], input[type="hidden"], textarea, select'
+  );
+
+  fields.forEach(field => {
+    field.value = "";
+  });
+}
+
+function toggleRequired(section, isRequired) {
+  if (!section) return;
+
+  const fields = section.querySelectorAll(
+    'input, textarea, select'
+  );
+
+  fields.forEach(field => {
+    if (isRequired) {
+      field.setAttribute("required", "required");
+    } else {
+      field.removeAttribute("required");
+    }
+  });
+}
+
 
 function setupNoBlinkDropdown(selectElement) {
   if (!selectElement) return;
@@ -100,8 +141,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const arrivalInput = document.getElementById("00NWC000004WAjq");
   const departureInput = document.getElementById("00NWC000004WAjr");
+  const customerUnavailablity = document.getElementById("00NWC000004WAjs");
+  const rvSiteNumber=document.getElementById("00NWC000004WAk5");
   const streetInput = document.getElementById("00NWC000004iEhi");
-  const stateSelect = document.getElementById("00NWC000004iFqf");
+  const stateSelect = document.getElementById("00NWC000004jHFJ");
   const postalcode = document.getElementById("00NWC000004iEwE");
   const cityInput = document.getElementById("00NWC000004iFlp");
 
@@ -155,40 +198,54 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  rallyRadios.forEach((radio) => {
-    radio.addEventListener("change", function () {
-      if (this.value === "yes") {
-        rallySection.style.display = "block";
-        installAddressSection.style.display = "none";
+ rallyRadios.forEach((radio) => {
+  radio.addEventListener("change", function () {
 
-        rallyNameInput.setAttribute("required", "required");
-        streetInput.removeAttribute("required");
-        stateSelect.removeAttribute("required");
-        postalcode.removeAttribute("required");
-        cityInput.removeAttribute("required");
-      } else if (this.value === "no") {
-        rallySection.style.display = "none";
-        installAddressSection.style.display = "block";
+    if (this.value === "yes") {
+      rallySection.style.display = "block";
+      installAddressSection.style.display = "none";
 
-        rallyNameInput.removeAttribute("required");
-        streetInput.setAttribute("required", "required");
-        stateSelect.setAttribute("required", "required");
-        postalcode.setAttribute("required", "required");
-        cityInput.setAttribute("required", "required");
+      rallyNameInput.setAttribute("required", "required");
+      streetInput.removeAttribute("required");
+      stateSelect.removeAttribute("required");
+      postalcode.removeAttribute("required");
+      cityInput.removeAttribute("required");
 
-        rallyNameInput.value = "";
-        arrivalInput.value = "";
-        departureInput.value = "";
+      streetInput.value="",
+      stateSelect.value="",
+      postalcode.value="",
+      cityInput.value=""
+      
 
-        if (datePickers) {
-          const instances = Array.isArray(datePickers)
-            ? datePickers
-            : [datePickers];
-          instances.forEach((fp) => fp.clear());
-        }
+    } else if (this.value === "no") {
+      rallySection.style.display = "none";
+      installAddressSection.style.display = "block";
+
+      rallyNameInput.removeAttribute("required");
+      streetInput.setAttribute("required", "required");
+      stateSelect.setAttribute("required", "required");
+      postalcode.setAttribute("required", "required");
+      cityInput.setAttribute("required", "required");
+
+
+      
+      rallyNameInput.value = "";
+      arrivalInput.value = "";
+      departureInput.value = "";
+      rvSiteNumber="";
+      customerUnavailablity="";
+
+      if (datePickers) {
+        const instances = Array.isArray(datePickers)
+          ? datePickers
+          : [datePickers];
+
+        instances.forEach((fp) => fp.clear());
       }
-    });
+    }
   });
+});
+
 
   if (form) {
     form.reset();
@@ -229,6 +286,33 @@ document.addEventListener("DOMContentLoaded", function () {
     return null;
   }
 
+  function getFieldLabel(field) {
+  if (field.labels && field.labels.length > 0 && field.labels[0]) {
+    return field.labels[0].textContent.replace("*", "").trim();
+  }
+  return field.getAttribute("placeholder") || field.name || "This field";
+}
+
+const allRequiredFields = form.querySelectorAll(
+  'input[required], textarea[required], select[required]'
+);
+
+allRequiredFields.forEach((field) => {
+  field.addEventListener("input", function () {
+    if (this.value.trim() !== "") {
+      this.classList.remove("error-input");
+    }
+  });
+
+  field.addEventListener("change", function () {
+    if (this.value.trim() !== "") {
+      this.classList.remove("error-input");
+    }
+  });
+});
+
+
+
   function makeMultiSelect(selectElement) {
     if (!selectElement) return;
 
@@ -255,6 +339,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (categorySelect) makeMultiSelect(categorySelect);
   if (typeSelect) makeMultiSelect(typeSelect);
+
+  if(rallyNameInput){
+    rallyNameInput.addEventListener("input",function(){
+      this.classList.remove("error-input");
+    });
+  }
+  
+  if(streetInput){
+    streetInput.addEventListener("input",function(){
+      this.classList.remove("error-input");  
+    });
+  }
+  if(cityInput){
+    cityInput.addEventListener("input",function(){
+      this.classList.remove("error-input");  
+    });
+    
+  }
+    if(postalCodeInput){
+    postalCodeInput.addEventListener("input",function(){
+      this.classList.remove("error-input");  
+    });
+    
+  }
+  
 
   if (emailInput) {
     emailInput.addEventListener("input", function () {
@@ -424,24 +533,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Edge case Fix
         if (field.hasAttribute("required") && field.value === "") {
+          console.log('this is required field');
           isValidInfo = false;
           errorElements.push(field);
 
-          const label = field.labels
-            ? field.labels[0].textContent.replace("*", "").trim()
-            : field.name;
-
-          errorMessages.push(`The field '${label}' is required.`);
-        }
-
-        if (
-          field.hasAttribute("required") &&
-          field.offsetParent !== null &&
-          field.value === ""
-        ) {
-          isValidInfo = false;
-          errorElements.push(field);
-          errorMessages.push(`Required field missing.`);
+          const label = getFieldLabel(field);
+          errorMessages.push(`'${label}'`);
+          return;
         }
       });
 
@@ -472,7 +570,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isValidInfo = false;
           errorElements.push(postalCodeInput);
           errorMessages.push(
-            "Invalid Postal Code format (12345 or 12345-6789)."
+            "Invalid Postal Code format. Please follow the given format (12345 or 12345-6789)."
           );
         }
       }
