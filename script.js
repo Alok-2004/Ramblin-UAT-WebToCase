@@ -377,10 +377,6 @@ allRequiredFields.forEach((field) => {
   }
 
   const serviceOptions = {
-    "Bearing Repack": [
-      { val: "Tandem Axle", text: "Tandem Axle" },
-      { val: "Triple Axle", text: "Triple Axle" },
-    ],
     "Suspension Upgrade": [
       { val: "Roadmaster Comfort Ride", text: "Roadmaster Comfort Ride" },
       {
@@ -394,12 +390,12 @@ allRequiredFields.forEach((field) => {
         text: "Heavy Duty Shackle & Wet Bolt Kit",
       },
       { val: "Crossmember (MORryde)", text: "Crossmember (MORryde)" },
-      { val: "Unsure", text: "Unsure / Need Advice" },
+      { val: "Unsure (Suspension)", text: "Unsure / Need Advice" },
     ],
     "Disc Brake Upgrade": [
       { val: "DeeMaxx", text: "DeeMaxx" },
       { val: "Kodiak", text: "Kodiak" },
-      { val: "Disc Brake Upgrade - Unsure", text: "Unsure / Need Advice" },
+      { val: "Unsure (Disc Brake)", text: "Unsure / Need Advice" },
     ],
     "Additional Safety Products": [
       { val: "Hubsavers", text: "Hubsavers" },
