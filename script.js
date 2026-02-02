@@ -42,10 +42,10 @@ function setSectionFieldsValue(section, value) {
   if (!section) return;
 
   const fields = section.querySelectorAll(
-    'input[type="text"], input[type="hidden"], textarea, select'
+    'input[type="text"], input[type="hidden"], textarea, select',
   );
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     field.value = value;
   });
 }
@@ -54,10 +54,10 @@ function clearSectionFields(section) {
   if (!section) return;
 
   const fields = section.querySelectorAll(
-    'input[type="text"], input[type="hidden"], textarea, select'
+    'input[type="text"], input[type="hidden"], textarea, select',
   );
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     field.value = "";
   });
 }
@@ -65,11 +65,9 @@ function clearSectionFields(section) {
 function toggleRequired(section, isRequired) {
   if (!section) return;
 
-  const fields = section.querySelectorAll(
-    'input, textarea, select'
-  );
+  const fields = section.querySelectorAll("input, textarea, select");
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     if (isRequired) {
       field.setAttribute("required", "required");
     } else {
@@ -77,7 +75,6 @@ function toggleRequired(section, isRequired) {
     }
   });
 }
-
 
 function setupNoBlinkDropdown(selectElement) {
   if (!selectElement) return;
@@ -106,7 +103,7 @@ function setupNoBlinkDropdown(selectElement) {
       e.stopPropagation();
       expand(this);
     },
-    true
+    true,
   );
 
   selectElement.addEventListener("change", collapse);
@@ -142,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const arrivalInput = document.getElementById("00NWC000004WAjq");
   const departureInput = document.getElementById("00NWC000004WAjr");
   const customerUnavailablity = document.getElementById("00NWC000004WAjs");
-  const rvSiteNumber=document.getElementById("00NWC000004WAk5");
+  const rvSiteNumber = document.getElementById("00NWC000004WAk5");
   const streetInput = document.getElementById("00NWC000004iEhi");
   const stateSelect = document.getElementById("00NWC000004jHFJ");
   const postalcode = document.getElementById("00NWC000004iEwE");
@@ -173,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             }
           },
-          true
+          true,
         );
       },
     });
@@ -198,54 +195,48 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
- rallyRadios.forEach((radio) => {
-  radio.addEventListener("change", function () {
+  rallyRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
+      if (this.value === "yes") {
+        rallySection.style.display = "block";
+        installAddressSection.style.display = "none";
 
-    if (this.value === "yes") {
-      rallySection.style.display = "block";
-      installAddressSection.style.display = "none";
+        rallyNameInput.setAttribute("required", "required");
+        streetInput.removeAttribute("required");
+        stateSelect.removeAttribute("required");
+        postalcode.removeAttribute("required");
+        cityInput.removeAttribute("required");
 
-      rallyNameInput.setAttribute("required", "required");
-      streetInput.removeAttribute("required");
-      stateSelect.removeAttribute("required");
-      postalcode.removeAttribute("required");
-      cityInput.removeAttribute("required");
+        ((streetInput.value = ""),
+          (stateSelect.value = ""),
+          (postalcode.value = ""),
+          (cityInput.value = ""));
+      } else if (this.value === "no") {
+        rallySection.style.display = "none";
+        installAddressSection.style.display = "block";
 
-      streetInput.value="",
-      stateSelect.value="",
-      postalcode.value="",
-      cityInput.value=""
-      
+        rallyNameInput.removeAttribute("required");
+        streetInput.setAttribute("required", "required");
+        stateSelect.setAttribute("required", "required");
+        postalcode.setAttribute("required", "required");
+        cityInput.setAttribute("required", "required");
 
-    } else if (this.value === "no") {
-      rallySection.style.display = "none";
-      installAddressSection.style.display = "block";
+        rallyNameInput.value = "";
+        arrivalInput.value = "";
+        departureInput.value = "";
+        rvSiteNumber = "";
+        customerUnavailablity = "";
 
-      rallyNameInput.removeAttribute("required");
-      streetInput.setAttribute("required", "required");
-      stateSelect.setAttribute("required", "required");
-      postalcode.setAttribute("required", "required");
-      cityInput.setAttribute("required", "required");
+        if (datePickers) {
+          const instances = Array.isArray(datePickers)
+            ? datePickers
+            : [datePickers];
 
-
-      
-      rallyNameInput.value = "";
-      arrivalInput.value = "";
-      departureInput.value = "";
-      rvSiteNumber="";
-      customerUnavailablity="";
-
-      if (datePickers) {
-        const instances = Array.isArray(datePickers)
-          ? datePickers
-          : [datePickers];
-
-        instances.forEach((fp) => fp.clear());
+          instances.forEach((fp) => fp.clear());
+        }
       }
-    }
+    });
   });
-});
-
 
   if (form) {
     form.reset();
@@ -287,31 +278,29 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getFieldLabel(field) {
-  if (field.labels && field.labels.length > 0 && field.labels[0]) {
-    return field.labels[0].textContent.replace("*", "").trim();
+    if (field.labels && field.labels.length > 0 && field.labels[0]) {
+      return field.labels[0].textContent.replace("*", "").trim();
+    }
+    return field.getAttribute("placeholder") || field.name || "This field";
   }
-  return field.getAttribute("placeholder") || field.name || "This field";
-}
 
-const allRequiredFields = form.querySelectorAll(
-  'input[required], textarea[required], select[required]'
-);
+  const allRequiredFields = form.querySelectorAll(
+    "input[required], textarea[required], select[required]",
+  );
 
-allRequiredFields.forEach((field) => {
-  field.addEventListener("input", function () {
-    if (this.value.trim() !== "") {
-      this.classList.remove("error-input");
-    }
+  allRequiredFields.forEach((field) => {
+    field.addEventListener("input", function () {
+      if (this.value.trim() !== "") {
+        this.classList.remove("error-input");
+      }
+    });
+
+    field.addEventListener("change", function () {
+      if (this.value.trim() !== "") {
+        this.classList.remove("error-input");
+      }
+    });
   });
-
-  field.addEventListener("change", function () {
-    if (this.value.trim() !== "") {
-      this.classList.remove("error-input");
-    }
-  });
-});
-
-
 
   function makeMultiSelect(selectElement) {
     if (!selectElement) return;
@@ -340,30 +329,27 @@ allRequiredFields.forEach((field) => {
   if (categorySelect) makeMultiSelect(categorySelect);
   if (typeSelect) makeMultiSelect(typeSelect);
 
-  if(rallyNameInput){
-    rallyNameInput.addEventListener("input",function(){
+  if (rallyNameInput) {
+    rallyNameInput.addEventListener("input", function () {
       this.classList.remove("error-input");
     });
   }
-  
-  if(streetInput){
-    streetInput.addEventListener("input",function(){
-      this.classList.remove("error-input");  
+
+  if (streetInput) {
+    streetInput.addEventListener("input", function () {
+      this.classList.remove("error-input");
     });
   }
-  if(cityInput){
-    cityInput.addEventListener("input",function(){
-      this.classList.remove("error-input");  
+  if (cityInput) {
+    cityInput.addEventListener("input", function () {
+      this.classList.remove("error-input");
     });
-    
   }
-    if(postalCodeInput){
-    postalCodeInput.addEventListener("input",function(){
-      this.classList.remove("error-input");  
+  if (postalCodeInput) {
+    postalCodeInput.addEventListener("input", function () {
+      this.classList.remove("error-input");
     });
-    
   }
-  
 
   if (emailInput) {
     emailInput.addEventListener("input", function () {
@@ -392,11 +378,12 @@ allRequiredFields.forEach((field) => {
       { val: "Crossmember (MORryde)", text: "Crossmember (MORryde)" },
       { val: "Unsure (Suspension)", text: "Unsure / Need Advice" },
     ],
-    "Disc Brake Upgrade": [
-      { val: "DeeMaxx", text: "DeeMaxx" },
-      { val: "Kodiak", text: "Kodiak" },
-      { val: "Unsure (Disc Brake)", text: "Unsure / Need Advice" },
-    ],
+
+    // "Disc Brake Upgrade": [
+    //   { val: "DeeMaxx", text: "DeeMaxx" },
+    //   { val: "Kodiak", text: "Kodiak" },
+    //   { val: "Unsure (Disc Brake)", text: "Unsure / Need Advice" },
+    // ],
     "Additional Safety Products": [
       { val: "Hubsavers", text: "Hubsavers" },
       { val: "Solid Steel Lugnuts", text: "Solid Steel Lugnuts" },
@@ -412,7 +399,7 @@ allRequiredFields.forEach((field) => {
   function updateServiceTypes(catSelect, typSelect, optionsMap) {
     const selectedOptions = Array.from(catSelect.selectedOptions);
     const prevSelected = new Set(
-      Array.from(typSelect.selectedOptions).map((opt) => opt.value)
+      Array.from(typSelect.selectedOptions).map((opt) => opt.value),
     );
 
     typSelect.innerHTML = "";
@@ -520,7 +507,7 @@ allRequiredFields.forEach((field) => {
       let errorMessages = [];
       let errorElements = [];
       const formFields = form.querySelectorAll(
-        'input[type="text"], input[type="email"], textarea'
+        'input[type="text"], input[type="email"], textarea',
       );
 
       formFields.forEach((field) => {
@@ -529,7 +516,7 @@ allRequiredFields.forEach((field) => {
 
         // Edge case Fix
         if (field.hasAttribute("required") && field.value === "") {
-          console.log('this is required field');
+          console.log("this is required field");
           isValidInfo = false;
           errorElements.push(field);
 
@@ -566,7 +553,7 @@ allRequiredFields.forEach((field) => {
           isValidInfo = false;
           errorElements.push(postalCodeInput);
           errorMessages.push(
-            "Invalid Postal Code format. Please follow the given format (12345 or 12345-6789)."
+            "Invalid Postal Code format. Please follow the given format (12345 or 12345-6789).",
           );
         }
       }
@@ -596,7 +583,7 @@ allRequiredFields.forEach((field) => {
           isValidInfo = false;
           errorElements.push(arrivalInput, departureInput);
           errorMessages.push(
-            "Arrival Date cannot be after the Departure Date."
+            "Arrival Date cannot be after the Departure Date.",
           );
         }
       }
@@ -609,22 +596,22 @@ allRequiredFields.forEach((field) => {
       }
 
       const selectedCategories = Array.from(categorySelect.selectedOptions).map(
-        (o) => o.value
+        (o) => o.value,
       );
       const selectedTypes = Array.from(typeSelect.selectedOptions).map(
-        (o) => o.value
+        (o) => o.value,
       );
 
       for (const cat of selectedCategories) {
         const typesForCat = serviceOptions[cat];
         if (typesForCat && typesForCat.length > 0) {
           const hasType = typesForCat.some((t) =>
-            selectedTypes.includes(t.val)
+            selectedTypes.includes(t.val),
           );
           if (!hasType) {
             showToast(
               `Please select at least one Service Type for "${cat}".`,
-              true
+              true,
             );
             return;
           }
