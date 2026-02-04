@@ -387,6 +387,16 @@ document.addEventListener("DOMContentLoaded", function () {
     "Additional Safety Products": [
       { val: "Hubsavers", text: "Hubsavers" },
       { val: "Solid Steel Lugnuts", text: "Solid Steel Lugnuts" },
+      { val: "Valcrum Caps", text: "Valcrum Caps" },
+      {
+        val: "Stainless Steel Braided Brake Line",
+        text: "Stainless Steel Braided Brake Line",
+      },
+      {
+        val: "HaloView Axle Temperature Sensors",
+        text: "HaloView Axle Temperature Sensors",
+      },
+      { val: "Emergency Brake Kit", text: "Emergency Brake Kit" },
     ],
   };
 
